@@ -8,8 +8,7 @@ import { SpeakingPage } from "@/components/Speaking/SpeakingPage";
 import { seedIfEmpty } from "@/db";
 import type { AppTab } from "@/types";
 
-const pageComponents: Record<AppTab, () => JSX.Element> = {
-  vocabulary: VocabularyPage,
+const pageComponents: Record<AppTab, React.ComponentType> = {  vocabulary: VocabularyPage,
   flashcards: FlashcardsPage,
   quiz: QuizPage,
   speaking: SpeakingPage,
