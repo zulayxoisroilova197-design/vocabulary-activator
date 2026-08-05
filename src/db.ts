@@ -1,6 +1,5 @@
 import Dexie, { type Table } from "dexie";
-import type { VocabWord } from "@/types";
-
+import type { VocabWord, WordLevel } from "@/types";
 
 export class VocabularyDB extends Dexie {
 
@@ -26,7 +25,7 @@ export const db = new VocabularyDB();
 type SeedWord = [
   english: string,
   uzbek: string,
-  level: string
+  level: WordLevel
 ];
 
 

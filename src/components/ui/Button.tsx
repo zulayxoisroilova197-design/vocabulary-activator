@@ -1,5 +1,5 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
-import { motion } from "framer-motion";
+import type { ReactNode } from "react";
+import { motion, type HTMLMotionProps } from "framer-motion";
 
 import { classNames } from "@/lib/utils";
 
@@ -11,18 +11,15 @@ type Variant =
   | "danger";
 
 
-interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {
-
+interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
   variant?: Variant;
   icon?: ReactNode;
-
+  children?: ReactNode;
 }
 
 
 
 const variantClass: Record<Variant, string> = {
-
 
   primary: `
     bg-gradient-to-r
@@ -34,7 +31,6 @@ const variantClass: Record<Variant, string> = {
     hover:shadow-indigo-500/50
   `,
 
-
   secondary: `
     border
     border-white/10
@@ -43,13 +39,11 @@ const variantClass: Record<Variant, string> = {
     hover:bg-white/10
   `,
 
-
   ghost: `
     bg-transparent
     text-slate-300
     hover:bg-white/10
   `,
-
 
   danger: `
     bg-red-500/20
@@ -60,8 +54,6 @@ const variantClass: Record<Variant, string> = {
   `,
 
 };
-
-
 
 
 
@@ -82,20 +74,15 @@ export function Button({
 
   return (
 
-
     <motion.button
-
 
       whileHover={{
         scale: 1.03,
       }}
 
-
       whileTap={{
         scale: 0.97,
       }}
-
-
 
       className={classNames(
 
@@ -104,25 +91,17 @@ export function Button({
         items-center
         justify-center
         gap-2
-
         rounded-2xl
-
         px-5
         py-2.5
-
         text-sm
         font-semibold
-
         transition-all
-
         border
         border-transparent
-
         disabled:pointer-events-none
         disabled:opacity-50
-
         `,
-
 
         variantClass[variant],
 
@@ -130,31 +109,19 @@ export function Button({
 
       )}
 
-
       {...rest}
-
 
     >
 
-
       {icon && (
-
         <span className="flex items-center">
-
           {icon}
-
         </span>
-
       )}
-
-
 
       {children}
 
-
-
     </motion.button>
-
 
   );
 
