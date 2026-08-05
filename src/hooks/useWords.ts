@@ -1,74 +1,234 @@
-import { useLiveQuery } from "dexie-react-hooks";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { db } from "@/db";
 import type { NewVocabWord, VocabWord } from "@/types";
 
+
+
 export function useWords(searchTerm = "") {
-  const words = useLiveQuery(
-    () => db.words.orderBy("createdAt").reverse().toArray(),
-    []
-  );
 
-  const filteredWords = useMemo(() => {
-    if (!words) return undefined;
 
-    const term = searchTerm.trim().toLowerCase();
+  const [words, setWords] =
+    useState<VocabWord[]>([]);
 
-    if (!term) return words;
 
-    return words.filter(
-      (w) =>
-        w.english.toLowerCase().includes(term) ||
-        w.uzbek.toLowerCase().includes(term) ||
-        w.example.toLowerCase().includes(term)
-    );
-  }, [words, searchTerm]);
+  const [isLoading, setIsLoading] =
+    useState(true);
 
-  return {
-    words: filteredWords,
-    isLoading: words === undefined,
-    isEmpty: words !== undefined && words.length === 0,
-  };
-}
 
-export async function addWord(word: NewVocabWord): Promise<number> {
-  const now = Date.now();
 
-  const id = await db.words.add({
-    ...word,
-    learned: false,
-    createdAt: now,
-    updatedAt: now,
-    timesReviewed: 0,
-  } as VocabWord);
 
-  if (id === undefined) {
-    throw new Error("Word ID was not created");
+  async function loadWords() {
+
+
+    setIsLoading(true);
+
+
+
+    let result =
+      await db.words
+        .orderBy("createdAt")
+        .reverse()
+        .toArray();
+
+
+
+
+    if (searchTerm.trim()) {
+
+
+      const search =
+        searchTerm.toLowerCase();
+
+
+
+      result =
+        result.filter((word) =>
+
+
+          word.english
+            .toLowerCase()
+            .includes(search)
+
+          ||
+
+          word.uzbek
+            .toLowerCase()
+            .includes(search)
+
+          ||
+
+          word.example
+            .toLowerCase()
+            .includes(search)
+
+
+        );
+
+
+    }
+
+
+
+    setWords(result);
+
+
+    setIsLoading(false);
+
+
   }
 
-  return id;
+
+
+
+
+
+  useEffect(() => {
+
+
+    loadWords();
+
+
+
+  }, [searchTerm]);
+
+
+
+
+
+
+  return {
+
+    words,
+
+    isLoading,
+
+    isEmpty:
+      !isLoading &&
+      words.length === 0,
+
+
+    refresh:
+      loadWords,
+
+  };
+
+
 }
+
+
+
+
+
+
+
+
+
+export async function addWord(
+  word: NewVocabWord
+) {
+
+
+  const now =
+    Date.now();
+
+
+
+  await db.words.add({
+
+    ...word,
+
+    learned: false,
+
+    createdAt: now,
+
+    updatedAt: now,
+
+    timesReviewed: 0,
+
+  });
+
+
+
+}
+
+
+
+
+
+
+
+
 
 export async function updateWord(
   id: number,
-  changes: Partial<VocabWord>
-): Promise<void> {
-  await db.words.update(id, {
-    ...changes,
-    updatedAt: Date.now(),
-  });
+  word: NewVocabWord
+) {
+
+
+  await db.words.update(
+
+    id,
+
+    {
+
+      ...word,
+
+      updatedAt:
+        Date.now(),
+
+    }
+
+  );
+
+
 }
 
-export async function deleteWord(id: number): Promise<void> {
+
+
+
+
+
+
+
+
+export async function deleteWord(
+  id: number
+) {
+
+
   await db.words.delete(id);
+
+
 }
+
+
+
+
+
+
+
+
 
 export async function toggleLearned(
   id: number,
   learned: boolean
-): Promise<void> {
-  await db.words.update(id, {
-    learned,
-    updatedAt: Date.now(),
-  });
+) {
+
+
+  await db.words.update(
+
+    id,
+
+    {
+
+      learned,
+
+      updatedAt:
+        Date.now(),
+
+    }
+
+  );
+
+
 }

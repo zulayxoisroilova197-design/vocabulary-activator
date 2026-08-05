@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Check, Pencil, Trash2 } from "lucide-react";
+import { Check, Pencil, Trash2, BookOpen } from "lucide-react";
+
 import type { VocabWord } from "@/types";
-import { classNames } from "@/lib/utils";
 
 interface WordCardProps {
   word: VocabWord;
@@ -10,60 +10,361 @@ interface WordCardProps {
   onToggleLearned: () => void;
 }
 
-export function WordCard({ word, onEdit, onDelete, onToggleLearned }: WordCardProps) {
+
+export function WordCard({
+  word,
+  onEdit,
+  onDelete,
+  onToggleLearned,
+}: WordCardProps) {
+
+
   return (
+
     <motion.div
+
       layout
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.18 }}
-      className="card flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
+
+      initial={{
+        opacity: 0,
+        y: 15,
+        scale: 0.97,
+      }}
+
+      animate={{
+        opacity: 1,
+        y: 0,
+        scale: 1,
+      }}
+
+      exit={{
+        opacity: 0,
+        y: -15,
+      }}
+
+      whileHover={{
+        y: -4,
+      }}
+
+      transition={{
+        duration: 0.25,
+      }}
+
+
+      className="
+        group
+        relative
+        overflow-hidden
+        rounded-3xl
+        border
+        border-white/10
+        bg-white/5
+        p-5
+        backdrop-blur-xl
+        shadow-xl
+        transition
+      "
+
     >
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <h3 className="font-display text-base font-semibold text-ink">{word.english}</h3>
-          <span className="text-ink-faint">&mdash;</span>
-          <span className="text-sm text-ink-muted">{word.uzbek}</span>
-          {word.learned && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2 py-0.5 text-[11px] font-medium text-success">
-              <Check size={11} strokeWidth={3} />
-              Learned
-            </span>
-          )}
+
+
+      {/* glow */}
+
+      <div
+        className="
+          absolute
+          -right-10
+          -top-10
+          h-32
+          w-32
+          rounded-full
+          bg-indigo-500/20
+          blur-3xl
+          opacity-0
+          transition
+          group-hover:opacity-100
+        "
+      />
+
+
+
+
+      <div className="
+        relative
+        flex
+        flex-col
+        gap-4
+      ">
+
+
+
+        <div className="flex items-start justify-between gap-3">
+
+
+          <div className="min-w-0">
+
+
+            <div className="
+              flex
+              flex-wrap
+              items-center
+              gap-2
+            ">
+
+
+              <div className="
+                flex
+                h-9
+                w-9
+                items-center
+                justify-center
+                rounded-xl
+                bg-indigo-500/20
+              ">
+
+                <BookOpen
+                  size={18}
+                  className="text-indigo-300"
+                />
+
+              </div>
+
+
+
+              <h3 className="
+                text-lg
+                font-bold
+                text-white
+              ">
+
+                {word.english}
+
+              </h3>
+
+
+
+              {word.learned && (
+
+                <span
+                  className="
+                    inline-flex
+                    items-center
+                    gap-1
+                    rounded-full
+                    bg-emerald-500/20
+                    px-3
+                    py-1
+                    text-xs
+                    font-medium
+                    text-emerald-300
+                  "
+                >
+
+                  <Check
+                    size={12}
+                    strokeWidth={3}
+                  />
+
+                  Learned
+
+                </span>
+
+              )}
+
+
+            </div>
+
+
+
+            <p className="
+              mt-3
+              text-base
+              text-slate-300
+            ">
+
+              {word.uzbek}
+
+            </p>
+
+
+
+            {word.example && (
+
+              <p className="
+                mt-3
+                rounded-2xl
+                bg-black/20
+                p-3
+                text-sm
+                leading-relaxed
+                text-slate-400
+              ">
+
+                "{word.example}"
+
+              </p>
+
+            )}
+
+
+
+          </div>
+
+
         </div>
-        <p className="mt-1.5 text-sm leading-relaxed text-ink-muted">{word.example}</p>
+
+
+
+
+
+
+        <div className="
+          flex
+          items-center
+          justify-end
+          gap-2
+        ">
+
+
+
+          {/* learned */}
+
+          <button
+
+            onClick={onToggleLearned}
+
+            title={
+              word.learned
+              ?
+              "Mark as not learned"
+              :
+              "Mark as learned"
+            }
+
+
+            className={`
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-2xl
+              border
+              transition-all
+
+              ${
+                word.learned
+
+                ?
+
+                `
+                border-emerald-400/30
+                bg-emerald-500/20
+                text-emerald-300
+                `
+
+                :
+
+                `
+                border-white/10
+                bg-white/5
+                text-slate-400
+                hover:bg-emerald-500/20
+                hover:text-emerald-300
+                `
+              }
+
+            `}
+
+          >
+
+            <Check size={17}/>
+
+          </button>
+
+
+
+
+
+          {/* edit */}
+
+          <button
+
+            onClick={onEdit}
+
+            title="Edit word"
+
+            className="
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-2xl
+              border
+              border-white/10
+              bg-white/5
+              text-slate-400
+              transition-all
+              hover:border-indigo-400/40
+              hover:bg-indigo-500/20
+              hover:text-indigo-300
+            "
+
+          >
+
+            <Pencil size={16}/>
+
+          </button>
+
+
+
+
+
+
+
+          {/* delete */}
+
+          <button
+
+            onClick={onDelete}
+
+            title="Delete word"
+
+            className="
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-2xl
+              border
+              border-white/10
+              bg-white/5
+              text-slate-400
+              transition-all
+              hover:border-red-400/40
+              hover:bg-red-500/20
+              hover:text-red-300
+            "
+
+          >
+
+            <Trash2 size={16}/>
+
+          </button>
+
+
+
+        </div>
+
+
+
       </div>
 
-      <div className="flex shrink-0 items-center gap-1 self-end sm:self-start">
-        <button
-          onClick={onToggleLearned}
-          aria-pressed={word.learned}
-          title={word.learned ? "Mark as not learned" : "Mark as learned"}
-          className={classNames(
-            "flex h-8 w-8 items-center justify-center rounded-lg border transition-colors",
-            word.learned
-              ? "border-success/30 bg-success-soft text-success"
-              : "border-border text-ink-faint hover:border-success/30 hover:text-success"
-          )}
-        >
-          <Check size={15} strokeWidth={2.5} />
-        </button>
-        <button
-          onClick={onEdit}
-          title="Edit word"
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-ink-faint transition-colors hover:border-accent/30 hover:text-accent"
-        >
-          <Pencil size={14} strokeWidth={2.25} />
-        </button>
-        <button
-          onClick={onDelete}
-          title="Delete word"
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-ink-faint transition-colors hover:border-danger/30 hover:text-danger"
-        >
-          <Trash2 size={14} strokeWidth={2.25} />
-        </button>
-      </div>
+
     </motion.div>
+
   );
+
 }

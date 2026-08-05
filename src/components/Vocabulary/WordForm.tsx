@@ -1,6 +1,12 @@
 import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import type { NewVocabWord, VocabWord } from "@/types";
+
+import type {
+  NewVocabWord,
+  VocabWord,
+  WordLevel,
+} from "@/types";
+
 
 interface WordFormProps {
   initialWord?: VocabWord;
@@ -8,90 +14,478 @@ interface WordFormProps {
   onCancel: () => void;
 }
 
+
 interface FormErrors {
   english?: string;
   uzbek?: string;
   example?: string;
 }
 
-export function WordForm({ initialWord, onSubmit, onCancel }: WordFormProps) {
-  const [english, setEnglish] = useState(initialWord?.english ?? "");
-  const [uzbek, setUzbek] = useState(initialWord?.uzbek ?? "");
-  const [example, setExample] = useState(initialWord?.example ?? "");
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function handleSubmit(event: FormEvent) {
+
+const topics = [
+  "Daily Life",
+  "Education",
+  "Technology",
+  "Work",
+  "Travel",
+  "Health",
+  "Food",
+  "Nature",
+];
+
+
+const levels: WordLevel[] = [
+  "A1",
+  "A2",
+  "B1",
+  "B2",
+  "C1",
+  "C2",
+];
+
+
+
+
+
+export function WordForm({
+  initialWord,
+  onSubmit,
+  onCancel,
+}: WordFormProps) {
+
+
+  const [english, setEnglish] =
+    useState(initialWord?.english ?? "");
+
+
+  const [uzbek, setUzbek] =
+    useState(initialWord?.uzbek ?? "");
+
+
+  const [example, setExample] =
+    useState(initialWord?.example ?? "");
+
+
+
+  const [topic, setTopic] =
+    useState(
+      initialWord?.topic ?? "Daily Life"
+    );
+
+
+  const [level, setLevel] =
+    useState<WordLevel>(
+      initialWord?.level ?? "B1"
+    );
+
+
+
+  const [errors, setErrors] =
+    useState<FormErrors>({});
+
+
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
+
+
+
+
+
+
+
+  async function handleSubmit(
+    event: FormEvent
+  ) {
+
+
     event.preventDefault();
+
+
+
     const nextErrors: FormErrors = {};
-    if (!english.trim()) nextErrors.english = "Enter the English word.";
-    if (!uzbek.trim()) nextErrors.uzbek = "Enter the Uzbek meaning.";
-    if (!example.trim()) nextErrors.example = "Add an example sentence.";
+
+
+
+    if (!english.trim())
+      nextErrors.english =
+        "Enter the English word.";
+
+
+    if (!uzbek.trim())
+      nextErrors.uzbek =
+        "Enter the Uzbek meaning.";
+
+
+    if (!example.trim())
+      nextErrors.example =
+        "Add an example sentence.";
+
+
+
     setErrors(nextErrors);
-    if (Object.keys(nextErrors).length > 0) return;
+
+
+
+    if (
+      Object.keys(nextErrors).length
+    ) return;
+
+
+
+
 
     setIsSubmitting(true);
+
+
+
     try {
-      await onSubmit({ english: english.trim(), uzbek: uzbek.trim(), example: example.trim() });
+
+
+      await onSubmit({
+
+        english: english.trim(),
+
+        uzbek: uzbek.trim(),
+
+        example: example.trim(),
+
+        topic,
+
+        level,
+
+      });
+
+
+
     } finally {
+
+
       setIsSubmitting(false);
+
+
     }
+
+
   }
 
+
+
+
+
+
+
+
+  const inputClass = `
+    w-full
+    rounded-2xl
+    border
+    border-white/10
+    bg-white/5
+    px-4
+    py-3
+    text-sm
+    text-white
+    outline-none
+    transition
+
+    placeholder:text-slate-500
+
+    focus:border-indigo-400/50
+    focus:bg-white/10
+  `;
+
+
+
+
+
+
+
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+
+
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-5"
+    >
+
+
+
+
       <div>
-        <label htmlFor="english" className="mb-1.5 block text-xs font-medium text-ink-muted">
+
+        <label className="
+          mb-2
+          block
+          text-sm
+          text-slate-300
+        ">
           English word
         </label>
+
+
         <input
-          id="english"
+
           value={english}
-          onChange={(e) => setEnglish(e.target.value)}
-          placeholder="e.g. resilient"
-          className="input"
-          autoFocus
+
+          onChange={(e)=>
+            setEnglish(e.target.value)
+          }
+
+          placeholder="example: sophisticated"
+
+          className={inputClass}
+
         />
-        {errors.english && <p className="mt-1.5 text-xs text-danger">{errors.english}</p>}
+
+
+        {errors.english && (
+
+          <p className="mt-2 text-xs text-red-300">
+            {errors.english}
+          </p>
+
+        )}
+
       </div>
 
+
+
+
+
+
       <div>
-        <label htmlFor="uzbek" className="mb-1.5 block text-xs font-medium text-ink-muted">
+
+        <label className="
+          mb-2
+          block
+          text-sm
+          text-slate-300
+        ">
           Uzbek meaning
         </label>
+
+
         <input
-          id="uzbek"
+
           value={uzbek}
-          onChange={(e) => setUzbek(e.target.value)}
-          placeholder="e.g. chidamli, bardoshli"
-          className="input"
+
+          onChange={(e)=>
+            setUzbek(e.target.value)
+          }
+
+          placeholder="example: murakkab"
+
+          className={inputClass}
+
         />
-        {errors.uzbek && <p className="mt-1.5 text-xs text-danger">{errors.uzbek}</p>}
+
       </div>
+
+
+
+
+
+
+
+
+      <div className="grid grid-cols-2 gap-3">
+
+
+        <div>
+
+          <label className="
+            mb-2
+            block
+            text-sm
+            text-slate-300
+          ">
+            Topic
+          </label>
+
+
+          <select
+
+            value={topic}
+
+            onChange={(e)=>
+              setTopic(e.target.value)
+            }
+
+            className={inputClass}
+
+          >
+
+            {topics.map((item)=>(
+
+              <option
+                key={item}
+                value={item}
+                className="bg-slate-900"
+              >
+                {item}
+              </option>
+
+            ))}
+
+          </select>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div>
+
+          <label className="
+            mb-2
+            block
+            text-sm
+            text-slate-300
+          ">
+            Level
+          </label>
+
+
+          <select
+
+            value={level}
+
+            onChange={(e)=>
+              setLevel(
+                e.target.value as WordLevel
+              )
+            }
+
+
+            className={inputClass}
+
+          >
+
+            {levels.map((item)=>(
+
+              <option
+
+                key={item}
+
+                value={item}
+
+                className="bg-slate-900"
+
+              >
+
+                {item}
+
+              </option>
+
+            ))}
+
+
+          </select>
+
+
+        </div>
+
+
+      </div>
+
+
+
+
+
+
 
       <div>
-        <label htmlFor="example" className="mb-1.5 block text-xs font-medium text-ink-muted">
+
+
+        <label className="
+          mb-2
+          block
+          text-sm
+          text-slate-300
+        ">
           Example sentence
         </label>
+
+
+
         <textarea
-          id="example"
+
           value={example}
-          onChange={(e) => setExample(e.target.value)}
-          placeholder="Write a sentence that uses the word naturally."
+
+          onChange={(e)=>
+            setExample(e.target.value)
+          }
+
           rows={3}
-          className="input resize-none"
+
+          placeholder="Example sentence"
+
+          className={`${inputClass} resize-none`}
+
         />
-        {errors.example && <p className="mt-1.5 text-xs text-danger">{errors.example}</p>}
+
+
+
       </div>
 
-      <div className="mt-2 flex justify-end gap-3">
-        <Button type="button" variant="secondary" onClick={onCancel}>
+
+
+
+
+
+
+
+
+      <div className="
+        flex
+        justify-end
+        gap-3
+      ">
+
+
+        <Button
+
+          type="button"
+
+          variant="secondary"
+
+          onClick={onCancel}
+
+        >
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {initialWord ? "Save changes" : "Add word"}
+
+
+
+
+
+        <Button
+
+          type="submit"
+
+          disabled={isSubmitting}
+
+        >
+
+          {initialWord
+            ? "Save changes"
+            : "Add word"}
+
         </Button>
+
+
       </div>
+
+
+
     </form>
+
+
   );
+
 }
